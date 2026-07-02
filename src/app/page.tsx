@@ -16,9 +16,10 @@ export const metadata: Metadata = {
 };
 
 const TESTIMONIOS = [
-  { nombre: "Ana T., Juriquilla", texto: "Cambié toda mi recámara y la calidad es mucho mejor que lo que había visto en otras tiendas. La garantía me dio mucha tranquilidad." },
-  { nombre: "Roberto M., Centro", texto: "Me atendieron súper rápido y me ayudaron a elegir un plan de pagos que me acomodó perfecto." },
-  { nombre: "Fernanda C., Milenio III", texto: "Ya es la segunda vez que les compro. Puntuales y el mueble llegó tal cual la foto." },
+  { nombre: "Yajahira Díaz, Valle de Santiago, Qro.", texto: "Está encantada mi hija con su mueble, en verdad mil gracias por haber sido parte importante para realizar su sueño, se ve precioso." },
+  { nombre: "Claudia Cabrera, Paseos de San Miguel", texto: "Me encantó, yo pensé que no iba a hacer tan espacioso el ropero pero todo lo contrario, aparte viene reforzado. La entrega rápida y muy amables. Si buscan algo bueno, bonito y barato, aquí en todo hogar lo encuentran. Excelente servicio, los recomiendo al 100%." },
+  { nombre: "Dalia Muñoz, Ex Hda. Santa Ana, Qro.", texto: "Excelente servicio, te entregan el mueble a tiempo y el personal es atento y amable." },
+  { nombre: "Nayeli Jiménez, Cerrito Colorado, Qro.", texto: "Llevo años comprando y todo me salió de excelente calidad, lo recomiendo al 100%, súper confiables y amables." },
 ];
 
 export default async function PaginaLanding({ searchParams }: { searchParams: Promise<{ utm?: string }> }) {
@@ -79,7 +80,7 @@ export default async function PaginaLanding({ searchParams }: { searchParams: Pr
       <section className="bg-superficie-2 py-16">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="mb-8 text-center text-2xl font-semibold text-texto sm:text-3xl">Lo que dicen quienes ya confiaron en nosotros</h2>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {TESTIMONIOS.map((t) => (
               <div key={t.nombre} className="rounded-[var(--radio-lg)] border border-borde bg-superficie p-5 shadow-[var(--sombra-suave)]">
                 <div className="mb-2 flex gap-0.5 text-marca">
