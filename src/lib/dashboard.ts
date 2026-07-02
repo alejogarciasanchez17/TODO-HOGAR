@@ -57,8 +57,8 @@ export async function obtenerDatosDashboard(usuario: UsuarioSesion) {
   ] = await Promise.all([
     prisma.cliente.count({ where: { eliminadoEn: null, creadoEn: { gte: iMes, lt: fMes }, ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, creadoEn: { gte: iMesPasado, lt: fMesPasado }, ...dondeMios } }),
-    prisma.cita.count({ where: { eliminadoEn: null, creadoEn: { gte: iMes, lt: fMes }, ...filtroPorRol(usuario, "vendedorId") } }),
-    prisma.cita.count({ where: { eliminadoEn: null, creadoEn: { gte: iMesPasado, lt: fMesPasado }, ...filtroPorRol(usuario, "vendedorId") } }),
+    prisma.cita.count({ where: { eliminadoEn: null, estado: { not: "cancelada" }, creadoEn: { gte: iMes, lt: fMes }, ...filtroPorRol(usuario, "vendedorId") } }),
+    prisma.cita.count({ where: { eliminadoEn: null, estado: { not: "cancelada" }, creadoEn: { gte: iMesPasado, lt: fMesPasado }, ...filtroPorRol(usuario, "vendedorId") } }),
     prisma.cliente.count({ where: { eliminadoEn: null, etapa: "Propuesta enviada", actualizadoEn: { gte: iMes, lt: fMes }, ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: iMes, lt: fMes }, ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: iMesPasado, lt: fMesPasado }, ...dondeMios } }),
