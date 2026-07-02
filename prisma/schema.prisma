@@ -1,0 +1,304 @@
+// Esquema de base de datos del CRM "todo hogar"
+// En desarrollo local usa SQLite (provider abajo). Al publicar en Vercel se
+// cambia el provider a "postgresql" y se regenera la migración inicial
+// (ver NOTAS-DEL-PROYECTO.md, sección de despliegue).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ---------- Usuarios (vendedores / admin) ----------
+model Usuario {
+  id                   String    @id @default(cuid())
+  nombre               String
+  correo               String    @unique
+  passwordHash         String
+  rol                  String    @default("VENDEDOR") // ADMIN | VENDEDOR | LECTURA
+  activo               Boolean   @default(true)
+  avatarUrl            String?
+  tema                 String    @default("automatico") // claro | oscuro | automatico
+  densidad             String    @default("comoda") // comoda | compacta
+  onboardingCompletado Boolean   @default(false)
+  metaMensual          Float     @default(0)
+  comisionPct          Float?
+  slugAgenda           String?   @unique
+  agendaActiva         Boolean   @default(true)
+  intentosFallidos     Int       @default(0)
+  bloqueadoHasta       DateTime?
+  eliminadoEn          DateTime?
+  creadoEn             DateTime  @default(now())
+  actualizadoEn        DateTime  @updatedAt
+
+  clientes           Cliente[]
+  citas              Cita[]
+  pagosRegistrados   Pago[]
+  archivosSubidos    Archivo[]
+  eventosTimeline    EventoTimeline[]
+  recordatorios      Recordatorio[]
+  menciones          Mencion[]
+  plantillas         Plantilla[]
+  favoritos          Favorito[]
+  registrosAuditoria RegistroAuditoria[]
+  vistasGuardadas    VistaGuardada[]
+
+  @@index([correo])
+  @@index([rol])
+}
+
+// ---------- Clientes (la ficha de venta) ----------
+model Cliente {
+  id                 String    @id @default(cuid())
+  nombre             String
+  telefono           String?
+  telefonoIntl       String?
+  correo             String?
+  origen             String? // Instagram, Facebook, Landing, Agenda [nombre], Recomendado...
+  canalUTM           String?
+  etapa              String    @default("Nuevo")
+  estadoCartera      String    @default("ACTIVO") // ACTIVO | GANADO | PERDIDO | ARCHIVADO
+  valorEstimado      Float     @default(0)
+  temperatura        String    @default("TIBIO") // CALIENTE | TIBIO | FRIO
+  objecionPrincipal  String?
+  notas              String?
+  proximaAccion      String?
+  proximaAccionFecha DateTime?
+  zona               String?
+  ultimaCompra       DateTime?
+  motivoPerdida      String?
+  motivoPerdidaOtro  String?
+
+  empresaNombre    String?
+  empresaGiro      String?
+  empresaPuesto    String?
+  empresaRFC       String?
+  empresaSitioWeb  String?
+  empresaDireccion String?
+  empresaTamano    String?
+  empresaNotas     String?
+
+  etapaEntradaEn   DateTime  @default(now())
+  ultimoContactoEn DateTime?
+
+  vendedorId String
+  vendedor   Usuario @relation(fields: [vendedorId], references: [id])
+
+  eliminadoEn   DateTime?
+  creadoEn      DateTime  @default(now())
+  actualizadoEn DateTime  @updatedAt
+
+  etiquetas       ClienteEtiqueta[]
+  favoritos       Favorito[]
+  archivos        Archivo[]
+  pagos           Pago[]
+  citas           Cita[]
+  eventosTimeline EventoTimeline[]
+  recordatorios   Recordatorio[]
+
+  @@index([nombre])
+  @@index([telefono])
+  @@index([correo])
+  @@index([etapa])
+  @@index([estadoCartera])
+  @@index([vendedorId])
+  @@index([empresaNombre])
+  @@index([proximaAccionFecha])
+}
+
+model Etiqueta {
+  id       String            @id @default(cuid())
+  nombre   String            @unique
+  color    String            @default("#e8b763")
+  clientes ClienteEtiqueta[]
+}
+
+model ClienteEtiqueta {
+  clienteId  String
+  etiquetaId String
+  cliente    Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  etiqueta   Etiqueta @relation(fields: [etiquetaId], references: [id], onDelete: Cascade)
+
+  @@id([clienteId, etiquetaId])
+}
+
+model Favorito {
+  id        String   @id @default(cuid())
+  usuarioId String
+  clienteId String
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  cliente   Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  creadoEn  DateTime @default(now())
+
+  @@unique([usuarioId, clienteId])
+}
+
+model Archivo {
+  id            String    @id @default(cuid())
+  clienteId     String
+  cliente       Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  nombreArchivo String
+  tipoMime      String
+  tamanoBytes   Int
+  etiqueta      String // Comprobante | Contrato | Identificacion | Cotizacion | Otro
+  datos         Bytes? // guardado en BD si no hay almacenamiento externo configurado
+  url           String? // si se usa almacenamiento externo (Vercel Blob, etc.)
+  subidoPorId   String
+  subidoPor     Usuario   @relation(fields: [subidoPorId], references: [id])
+  eliminadoEn   DateTime?
+  creadoEn      DateTime  @default(now())
+
+  @@index([clienteId])
+}
+
+model Pago {
+  id               String    @id @default(cuid())
+  clienteId        String
+  cliente          Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  monto            Float
+  metodo           String // Transferencia | Efectivo | Depósito / anticipo
+  estatus          String    @default("pendiente") // pendiente | pagado | vencido
+  fechaPago        DateTime?
+  fechaVencimiento DateTime?
+  folio            Int
+  concepto         String?
+  registradoPorId  String
+  registradoPor    Usuario   @relation(fields: [registradoPorId], references: [id])
+  eliminadoEn      DateTime?
+  creadoEn         DateTime  @default(now())
+  actualizadoEn    DateTime  @updatedAt
+
+  @@index([clienteId])
+  @@index([estatus])
+  @@index([fechaPago])
+}
+
+model Cita {
+  id             String    @id @default(cuid())
+  clienteId      String
+  cliente        Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  vendedorId     String
+  vendedor       Usuario   @relation(fields: [vendedorId], references: [id])
+  fecha          DateTime
+  duracionMin    Int       @default(15)
+  estado         String    @default("confirmada") // confirmada | cancelada | realizada
+  googleEventId  String?
+  googleMeetLink String?
+  notas          String?
+  eliminadoEn    DateTime?
+  creadoEn       DateTime  @default(now())
+  actualizadoEn  DateTime  @updatedAt
+
+  @@index([vendedorId])
+  @@index([clienteId])
+  @@index([fecha])
+}
+
+model EventoTimeline {
+  id          String   @id @default(cuid())
+  clienteId   String
+  cliente     Cliente  @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  tipo        String // nota|llamada|whatsapp|correo|cita|pago|cambio_etapa|cambio_estado|objecion|archivo|reasignacion|otro
+  descripcion String
+  metadata    String? // JSON serializado
+  autorId     String?
+  autor       Usuario? @relation(fields: [autorId], references: [id])
+  fecha       DateTime @default(now())
+  creadoEn    DateTime @default(now())
+
+  @@index([clienteId])
+  @@index([fecha])
+}
+
+model Recordatorio {
+  id        String   @id @default(cuid())
+  usuarioId String
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  clienteId String?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  texto     String
+  fecha     DateTime
+  hecho     Boolean  @default(false)
+  creadoEn  DateTime @default(now())
+
+  @@index([usuarioId])
+  @@index([fecha])
+}
+
+model Mencion {
+  id        String   @id @default(cuid())
+  usuarioId String
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  texto     String
+  entidad   String // cliente | pago | cita ...
+  entidadId String?
+  leido     Boolean  @default(false)
+  fecha     DateTime @default(now())
+
+  @@index([usuarioId])
+}
+
+model Plantilla {
+  id        String   @id @default(cuid())
+  usuarioId String? // null = plantilla del sistema, visible a todos
+  usuario   Usuario? @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  nombre    String
+  canal     String // whatsapp | correo
+  categoria String? // reactivar_frio | vencer_precio | lo_voy_a_pensar | confirmar_cita | pago_vencido | urgencia | bajar_precio | pedir_si | postventa | referidos | otro
+  asunto    String?
+  cuerpo    String
+  favorita  Boolean  @default(false)
+  creadoEn  DateTime @default(now())
+
+  @@index([usuarioId])
+}
+
+model RegistroAuditoria {
+  id          String   @id @default(cuid())
+  usuarioId   String?
+  usuario     Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+  accion      String
+  entidadTipo String
+  entidadId   String?
+  detalle     String? // JSON
+  ip          String?
+  creadoEn    DateTime @default(now())
+
+  @@index([usuarioId])
+  @@index([creadoEn])
+  @@index([entidadTipo])
+}
+
+model ConfiguracionNegocio {
+  id                      String   @id @default("default")
+  nombreNegocio           String   @default("todo hogar")
+  colorMarca              String   @default("#e8b763")
+  moneda                  String   @default("MXN")
+  husoHorario             String   @default("America/Mexico_City")
+  horarioInicio           String   @default("15:00")
+  horarioFin              String   @default("20:00")
+  duracionCitaMin         Int      @default(15)
+  etapasEmbudo            String   @default("[\"Nuevo\",\"Cliente de pagares\",\"Cliente activo\",\"Contactado\",\"Cita agendada\",\"Propuesta enviada\",\"Cliente ganado\",\"Perdido\"]")
+  metodosPago             String   @default("[\"Transferencia\",\"Efectivo\",\"Depósito / anticipo\"]")
+  motivosPerdida          String   @default("[\"Está caro\",\"Se fue con la competencia\",\"No contestó\",\"No era buen momento\",\"No calificaba\",\"Otro\"]")
+  mensajeWhatsappTipo     String   @default("")
+  metaMensualClientes     Int      @default(20)
+  umbralEstancamientoDias Int      @default(7)
+  comisionGlobalPct       Float?
+  actualizadoEn           DateTime @updatedAt
+}
+
+model VistaGuardada {
+  id        String   @id @default(cuid())
+  usuarioId String
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  nombre    String
+  seccion   String
+  filtros   String // JSON
+  creadoEn  DateTime @default(now())
+
+  @@index([usuarioId])
+}

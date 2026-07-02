@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+/* Modo oscuro controlado por el atributo data-tema (no solo por el SO),
+   para poder ofrecer Claro / Oscuro / Automático de verdad. */
+@custom-variant dark (&:where([data-tema="oscuro"], [data-tema="oscuro"] *));
+
+:root {
+  color-scheme: light;
+
+  /* ---- Color de marca: se cambia AQUÍ y se actualiza todo el sistema ---- */
+  --color-marca: #e8b763;
+  --color-marca-fuerte: #c9963f;
+  --color-marca-suave: #f6e6c4;
+  --color-marca-contraste: #3a2a0f;
+
+  /* ---- Superficies y texto (modo claro) ---- */
+  --color-fondo: #faf8f5;
+  --color-superficie: #ffffff;
+  --color-superficie-2: #f4f1ec;
+  --color-vidrio: rgba(255, 255, 255, 0.65);
+  --color-borde: rgba(28, 25, 20, 0.1);
+  --color-texto: #1c1917;
+  --color-texto-suave: #57534e;
+  --color-texto-tenue: #948d84;
+
+  /* ---- Semánticos ---- */
+  --color-exito: #16a34a;
+  --color-peligro: #dc2626;
+  --color-advertencia: #d97706;
+  --color-info: #0ea5e9;
+
+  /* ---- Matices por sección (acento secundario, en armonía con la marca) ---- */
+  --acento-dashboard: var(--color-marca);
+  --acento-clientes: #3b82f6;
+  --acento-embudo: #6366f1;
+  --acento-agenda: #22c55e;
+  --acento-pagos: #10b981;
+  --acento-tareas: #f59e0b;
+  --acento-completados: #16a34a;
+  --acento-perdidos: #78716c;
+  --acento-archivados: #78716c;
+  --acento-paginas-agenda: #14b8a6;
+  --acento-equipo: #06b6d4;
+  --acento-comparte: var(--color-marca);
+  --acento-buscador: var(--color-marca);
+  --acento-ia: var(--color-marca);
+  --acento-admin: var(--color-marca);
+
+  --radio-sm: 0.6rem;
+  --radio-md: 0.9rem;
+  --radio-lg: 1.35rem;
+  --radio-xl: 1.9rem;
+
+  --sombra-suave: 0 1px 2px rgba(28, 25, 20, 0.04), 0 8px 24px -12px rgba(28, 25, 20, 0.12);
+  --sombra-flotante: 0 12px 32px -8px rgba(28, 25, 20, 0.22);
+}
+
+[data-tema="oscuro"] {
+  color-scheme: dark;
+
+  --color-fondo: #131110;
+  --color-superficie: #1d1a17;
+  --color-superficie-2: #262220;
+  --color-vidrio: rgba(29, 26, 23, 0.65);
+  --color-borde: rgba(255, 255, 255, 0.1);
+  --color-texto: #f5f2ee;
+  --color-texto-suave: #b8afa4;
+  --color-texto-tenue: #83786c;
+
+  --sombra-suave: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  --sombra-flotante: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+}
+
+@theme inline {
+  --color-marca: var(--color-marca);
+  --color-marca-fuerte: var(--color-marca-fuerte);
+  --color-marca-suave: var(--color-marca-suave);
+  --color-marca-contraste: var(--color-marca-contraste);
+
+  --color-fondo: var(--color-fondo);
+  --color-superficie: var(--color-superficie);
+  --color-superficie-2: var(--color-superficie-2);
+  --color-vidrio: var(--color-vidrio);
+  --color-borde: var(--color-borde);
+  --color-texto: var(--color-texto);
+  --color-texto-suave: var(--color-texto-suave);
+  --color-texto-tenue: var(--color-texto-tenue);
+
+  --color-exito: var(--color-exito);
+  --color-peligro: var(--color-peligro);
+  --color-advertencia: var(--color-advertencia);
+  --color-info: var(--color-info);
+
+  --color-acento-dashboard: var(--acento-dashboard);
+  --color-acento-clientes: var(--acento-clientes);
+  --color-acento-embudo: var(--acento-embudo);
+  --color-acento-agenda: var(--acento-agenda);
+  --color-acento-pagos: var(--acento-pagos);
+  --color-acento-tareas: var(--acento-tareas);
+  --color-acento-completados: var(--acento-completados);
+  --color-acento-perdidos: var(--acento-perdidos);
+  --color-acento-archivados: var(--acento-archivados);
+  --color-acento-paginas-agenda: var(--acento-paginas-agenda);
+  --color-acento-equipo: var(--acento-equipo);
+  --color-acento-comparte: var(--acento-comparte);
+  --color-acento-buscador: var(--acento-buscador);
+  --color-acento-ia: var(--acento-ia);
+  --color-acento-admin: var(--acento-admin);
+
+  --radius-sm: var(--radio-sm);
+  --radius-md: var(--radio-md);
+  --radius-lg: var(--radio-lg);
+  --radius-xl: var(--radio-xl);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  transition: background-color 200ms ease;
+}
+
+body {
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: 16px;
+}
+
+/* Vidrio translúcido sobrio: solo para nav, tarjetas de embudo, modales y panel IA. */
+.vidrio {
+  background: var(--color-vidrio);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-borde);
+}
+
+/* Anillo de foco visible y consistente para navegación por teclado. */
+:focus-visible {
+  outline: 2px solid var(--color-marca);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-marca-suave);
+  color: var(--color-marca-contraste);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Barra de scroll discreta */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-borde);
+  border-radius: 999px;
+}
