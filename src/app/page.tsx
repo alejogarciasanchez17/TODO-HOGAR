@@ -27,7 +27,7 @@ export default async function PaginaLanding({ searchParams }: { searchParams: Pr
   const config = await obtenerConfiguracionNegocio();
   const vendedor = await obtenerVendedorDeTurno();
   const whatsappNegocio = process.env.NEXT_PUBLIC_WHATSAPP_NEGOCIO || "524421234567";
-  const mensajeWhatsapp = encodeURIComponent(config.mensajeWhatsappTipo || "Hola, quisiera más información");
+  const mensajeWhatsapp = encodeURIComponent("Hola, me interesa saber más de todo hogar y sus artículos. 😊");
 
   return (
     <div className="min-h-screen bg-fondo">
