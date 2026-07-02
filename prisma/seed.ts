@@ -61,21 +61,23 @@ async function main() {
   }
 
   // ---------- Configuración del negocio ----------
-  await prisma.configuracionNegocio.create({
-    data: {
-      id: "default",
-      nombreNegocio: "todo hogar",
-      colorMarca: "#e8b763",
-      moneda: "MXN",
-      husoHorario: "America/Mexico_City",
-      horarioInicio: "15:00",
-      horarioFin: "20:00",
-      duracionCitaMin: 15,
-      mensajeWhatsappTipo:
-        "hola,......., soy, Santi o alejo como me conozcas, de todo hogar. pase a saludarte y preguntar como te ha ido. si en algún memento quieres renovar algún espacio de tu casa, colchones, alacenas, cajoneras, etc , aquí estoy para apoyarte, sin compromiso. y si conoces a alguien que también ande buscando muebles, con gusto le platico. cualquier cosa, aquí ando.",
-      metaMensualClientes: 20,
-      umbralEstancamientoDias: 7,
-    },
+  const datosConfiguracion = {
+    nombreNegocio: "todo hogar",
+    colorMarca: "#e8b763",
+    moneda: "MXN",
+    husoHorario: "America/Mexico_City",
+    horarioInicio: "15:00",
+    horarioFin: "20:00",
+    duracionCitaMin: 15,
+    mensajeWhatsappTipo:
+      "hola,......., soy, Santi o alejo como me conozcas, de todo hogar. pase a saludarte y preguntar como te ha ido. si en algún memento quieres renovar algún espacio de tu casa, colchones, alacenas, cajoneras, etc , aquí estoy para apoyarte, sin compromiso. y si conoces a alguien que también ande buscando muebles, con gusto le platico. cualquier cosa, aquí ando.",
+    metaMensualClientes: 20,
+    umbralEstancamientoDias: 7,
+  };
+  await prisma.configuracionNegocio.upsert({
+    where: { id: "default" },
+    create: { id: "default", ...datosConfiguracion },
+    update: datosConfiguracion,
   });
 
   // ---------- Usuarios ----------
