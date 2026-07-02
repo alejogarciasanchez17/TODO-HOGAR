@@ -53,6 +53,7 @@ export default async function PaginaDashboard() {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <NumeroGrande titulo="Nuevos interesados" valor={String(d.nuevosMes)} variacion={d.nuevosVariacion} />
         <NumeroGrande titulo="Citas agendadas" valor={String(d.citasMes)} variacion={d.citasVariacion} />
+        <NumeroGrande titulo="Citas canceladas o eliminadas" valor={String(d.citasCanceladasMes)} tono="peligro" />
         <NumeroGrande titulo="Propuestas enviadas" valor={String(d.propuestasMes)} />
         <NumeroGrande titulo="Clientes ganados" valor={String(d.ganadosMes)} variacion={d.ganadosVariacion} />
         <NumeroGrande titulo="Ingresos cobrados" valor={formatoMoneda(d.ingresosMes, config.moneda)} variacion={d.ingresosVariacion} />

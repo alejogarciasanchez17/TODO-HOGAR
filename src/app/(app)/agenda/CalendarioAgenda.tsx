@@ -7,10 +7,11 @@ import { Boton } from "@/components/ui/Boton";
 import { Campo } from "@/components/ui/Campo";
 import { Input, Select, Textarea } from "@/components/ui/Input";
 import { Modal } from "@/components/ui/Modal";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Icono } from "@/components/ui/Icono";
 import { avisos } from "@/lib/toast";
 import { cn } from "@/lib/utils";
-import { crearCita, cancelarCita } from "./actions";
+import { crearCita, cancelarCita, eliminarCita } from "./actions";
 
 const DIAS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 
@@ -63,6 +64,7 @@ export function CalendarioAgenda({
   const router = useRouter();
   const [slotElegido, setSlotElegido] = useState<Date | null>(null);
   const [citaVista, setCitaVista] = useState<Cita | null>(null);
+  const [aEliminar, setAEliminar] = useState<Cita | null>(null);
   const [estado, accion, enCurso] = useActionState(crearCita, undefined);
 
   const inicio = new Date(inicioSemana);
@@ -214,8 +216,8 @@ export function CalendarioAgenda({
             )}
             <div className="flex justify-end gap-3 border-t border-borde pt-4">
               <Boton
-                variante="peligro"
-                icono="Trash2"
+                variante="secundario"
+                icono="XCircle"
                 onClick={async () => {
                   await cancelarCita(citaVista.id);
                   avisos.exito("Cita cancelada");
@@ -225,10 +227,34 @@ export function CalendarioAgenda({
               >
                 Cancelar cita
               </Boton>
+              <Boton
+                variante="peligro"
+                icono="Trash2"
+                onClick={() => setAEliminar(citaVista)}
+              >
+                Eliminar cita
+              </Boton>
             </div>
           </div>
         )}
       </Modal>
+
+      <ConfirmDialog
+        abierto={aEliminar !== null}
+        onCerrar={() => setAEliminar(null)}
+        onConfirmar={async () => {
+          if (!aEliminar) return;
+          await eliminarCita(aEliminar.id);
+          avisos.exito("Cita eliminada");
+          setAEliminar(null);
+          setCitaVista(null);
+          router.refresh();
+        }}
+        titulo="¿Eliminar esta cita?"
+        descripcion="Se moverá a la Papelera y ya no se contará como agendada."
+        textoConfirmar="Sí, eliminar"
+        variantePeligro
+      />
     </div>
   );
 }

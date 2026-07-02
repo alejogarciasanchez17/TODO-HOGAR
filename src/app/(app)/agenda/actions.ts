@@ -95,6 +95,22 @@ export async function cancelarCita(id: string) {
   await registrarEvento({ clienteId: cita.clienteId, tipo: "cita", descripcion: "Cita cancelada.", autorId: usuario.id });
   revalidatePath("/agenda");
   revalidatePath(`/clientes/${cita.clienteId}`);
+  revalidatePath("/dashboard");
+}
+
+export async function eliminarCita(id: string) {
+  const usuario = await sesionOFalla();
+  const cita = await prisma.cita.findUnique({ where: { id }, include: { cliente: true } });
+  if (!cita) throw new Error("Cita no encontrada");
+  if (!puede(usuario, "editar_cliente", cita.cliente)) throw new Error("No autorizado");
+
+  await prisma.cita.update({ where: { id }, data: { eliminadoEn: new Date() } });
+  await eliminarEventoGoogle(cita.googleEventId);
+  await registrarEvento({ clienteId: cita.clienteId, tipo: "cita", descripcion: "Cita eliminada.", autorId: usuario.id });
+  await registrarAuditoria({ usuarioId: usuario.id, accion: "eliminar_cita", entidadTipo: "cita", entidadId: id });
+  revalidatePath("/agenda");
+  revalidatePath(`/clientes/${cita.clienteId}`);
+  revalidatePath("/dashboard");
 }
 
 export async function obtenerHorarioNegocio() {
