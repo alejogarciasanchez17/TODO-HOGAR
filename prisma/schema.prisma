@@ -1,7 +1,9 @@
 // Esquema de base de datos del CRM "todo hogar"
-// En desarrollo local usa SQLite (provider abajo). Al publicar en Vercel se
-// cambia el provider a "postgresql" y se regenera la migración inicial
-// (ver NOTAS-DEL-PROYECTO.md, sección de despliegue).
+// El provider es "postgresql" porque así lo necesita producción (Vercel +
+// Neon) para correr las migraciones. En desarrollo local, src/lib/prisma.ts
+// detecta si DATABASE_URL empieza con "file:" y usa el adaptador de SQLite
+// en tiempo de ejecución (el cliente de Prisma con adaptadores es portable
+// entre motores para consultas normales; ver NOTAS-DEL-PROYECTO.md).
 
 generator client {
   provider = "prisma-client"
@@ -9,7 +11,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 // ---------- Usuarios (vendedores / admin) ----------
