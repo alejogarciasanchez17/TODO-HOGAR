@@ -28,7 +28,7 @@ export default async function PaginaEquipo() {
       const [ganados, ingresos, enRiesgo, pagosVencidos] = await Promise.all([
         prisma.cliente.count({ where: { vendedorId: v.id, eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: inicioMes } } }),
         prisma.pago.aggregate({
-          where: { registradoPorId: v.id, eliminadoEn: null, estatus: "pagado", fechaPago: { gte: inicioMes } },
+          where: { registradoPorId: v.id, eliminadoEn: null, estatus: "pagado", fechaPago: { gte: inicioMes }, cliente: { eliminadoEn: null } },
           _sum: { monto: true },
         }),
         prisma.cliente.count({

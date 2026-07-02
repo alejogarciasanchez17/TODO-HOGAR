@@ -18,6 +18,7 @@ export async function obtenerSlotsDelDia(slug: string, fechaISO: string) {
     horarioInicio: config.horarioInicio,
     horarioFin: config.horarioFin,
     duracionMin: config.duracionCitaMin,
+    husoHorario: config.husoHorario,
   });
 }
 

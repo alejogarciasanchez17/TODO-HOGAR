@@ -62,10 +62,10 @@ export async function obtenerDatosDashboard(usuario: UsuarioSesion) {
     prisma.cliente.count({ where: { eliminadoEn: null, etapa: "Propuesta enviada", actualizadoEn: { gte: iMes, lt: fMes }, ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: iMes, lt: fMes }, ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: iMesPasado, lt: fMesPasado }, ...dondeMios } }),
-    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pagado", fechaPago: { gte: iMes, lt: fMes }, cliente: { ...dondeMios } }, _sum: { monto: true } }),
-    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pagado", fechaPago: { gte: iMesPasado, lt: fMesPasado }, cliente: { ...dondeMios } }, _sum: { monto: true } }),
-    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pendiente", cliente: { ...dondeMios } }, _sum: { monto: true }, _count: true }),
-    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "vencido", cliente: { ...dondeMios } }, _sum: { monto: true }, _count: true }),
+    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pagado", fechaPago: { gte: iMes, lt: fMes }, cliente: { eliminadoEn: null, ...dondeMios } }, _sum: { monto: true } }),
+    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pagado", fechaPago: { gte: iMesPasado, lt: fMesPasado }, cliente: { eliminadoEn: null, ...dondeMios } }, _sum: { monto: true } }),
+    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pendiente", cliente: { eliminadoEn: null, ...dondeMios } }, _sum: { monto: true }, _count: true }),
+    prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "vencido", cliente: { eliminadoEn: null, ...dondeMios } }, _sum: { monto: true }, _count: true }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "PERDIDO", actualizadoEn: { gte: iMes, lt: fMes }, ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "GANADO", ...dondeMios } }),
     prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "PERDIDO", ...dondeMios } }),
@@ -81,7 +81,7 @@ export async function obtenerDatosDashboard(usuario: UsuarioSesion) {
     const ini = inicioMes(i);
     const fin = finMes(i);
     const [ingresos, ganados] = await Promise.all([
-      prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pagado", fechaPago: { gte: ini, lt: fin }, cliente: { ...dondeMios } }, _sum: { monto: true } }),
+      prisma.pago.aggregate({ where: { eliminadoEn: null, estatus: "pagado", fechaPago: { gte: ini, lt: fin }, cliente: { eliminadoEn: null, ...dondeMios } }, _sum: { monto: true } }),
       prisma.cliente.count({ where: { eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: ini, lt: fin }, ...dondeMios } }),
     ]);
     meses.push({
@@ -105,7 +105,7 @@ export async function obtenerDatosDashboard(usuario: UsuarioSesion) {
     vendedores.map(async (v) => {
       const [ganados, ingresos] = await Promise.all([
         prisma.cliente.count({ where: { vendedorId: v.id, eliminadoEn: null, estadoCartera: "GANADO", ultimaCompra: { gte: iMes, lt: fMes } } }),
-        prisma.pago.aggregate({ where: { registradoPorId: v.id, eliminadoEn: null, estatus: "pagado", fechaPago: { gte: iMes, lt: fMes } }, _sum: { monto: true } }),
+        prisma.pago.aggregate({ where: { registradoPorId: v.id, eliminadoEn: null, estatus: "pagado", fechaPago: { gte: iMes, lt: fMes }, cliente: { eliminadoEn: null } }, _sum: { monto: true } }),
       ]);
       return { nombre: v.nombre, ganados, ingresos: ingresos._sum.monto ?? 0, meta: v.metaMensual };
     })

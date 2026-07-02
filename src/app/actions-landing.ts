@@ -27,6 +27,7 @@ export async function obtenerSlotsLanding(vendedorId: string, fechaISO: string) 
     horarioInicio: config.horarioInicio,
     horarioFin: config.horarioFin,
     duracionMin: config.duracionCitaMin,
+    husoHorario: config.husoHorario,
   });
 }
 
