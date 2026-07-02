@@ -13,7 +13,11 @@ export default auth((request) => {
     pathname === "/" ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/agenda/") ||
-    pathname.startsWith("/api/");
+    pathname.startsWith("/api/") ||
+    pathname === "/icon" ||
+    pathname.startsWith("/icon-") ||
+    pathname === "/opengraph-image" ||
+    pathname === "/manifest.webmanifest";
 
   if (estaAutenticado && pathname === "/login") {
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl.origin));
