@@ -84,6 +84,7 @@ export async function actualizarEstatusPago(id: string, estatus: "pendiente" | "
   });
   revalidatePath(`/clientes/${pago.clienteId}`);
   revalidatePath("/pagos");
+  revalidatePath("/dashboard");
 }
 
 export async function eliminarPago(id: string) {
@@ -96,4 +97,5 @@ export async function eliminarPago(id: string) {
   await registrarAuditoria({ usuarioId: usuario.id, accion: "eliminar_pago", entidadTipo: "pago", entidadId: id });
   revalidatePath(`/clientes/${pago.clienteId}`);
   revalidatePath("/pagos");
+  revalidatePath("/dashboard");
 }
