@@ -17,9 +17,8 @@ export async function Topbar() {
   return (
     <header className="vidrio sticky top-0 z-30 flex h-16 shrink-0 items-center gap-3 border-b border-borde px-4 md:px-6">
       <Link href="/dashboard" className="flex items-center gap-2 md:hidden">
-        <div className="flex size-8 items-center justify-center rounded-[var(--radio-sm)] bg-marca text-marca-contraste">
-          <span className="text-sm font-bold">th</span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-todo-hogar.png" alt="todo hogar" className="size-8 rounded-[var(--radio-sm)]" />
       </Link>
       <div className="flex-1 md:max-w-sm">
         <BuscadorGlobal />

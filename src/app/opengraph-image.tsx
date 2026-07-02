@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { obtenerConfiguracionNegocio } from "@/lib/config-negocio";
+import { logoDataUri } from "@/lib/logo";
 
 export const alt = "todo hogar";
 export const size = { width: 1200, height: 630 };
@@ -22,22 +23,8 @@ export default async function Image() {
           fontFamily: "sans-serif",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            width: 140,
-            height: 140,
-            borderRadius: 32,
-            background: config.colorMarca,
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: 36,
-          }}
-        >
-          <span style={{ fontSize: 64, fontWeight: 700, color: "#3a2a0f" }}>
-            {config.nombreNegocio.charAt(0).toUpperCase()}
-          </span>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={logoDataUri()} width={160} height={160} style={{ marginBottom: 36 }} />
         <div style={{ fontSize: 68, fontWeight: 700, color: "#1c1917" }}>{config.nombreNegocio}</div>
         <div style={{ fontSize: 32, color: "#57534e", marginTop: 16 }}>
           Muebles tubulares y artículos para el hogar · Querétaro

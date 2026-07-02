@@ -36,9 +36,8 @@ export function Sidebar({ esAdmin }: { esAdmin: boolean }) {
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-borde bg-superficie md:flex">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="flex size-9 items-center justify-center rounded-[var(--radio-sm)] bg-marca text-marca-contraste">
-          <Icono nombre="ShoppingBag" className="size-5" />
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-todo-hogar.png" alt="todo hogar" className="size-9 rounded-[var(--radio-sm)]" />
         <span className="text-lg font-semibold">todo hogar</span>
       </div>
       <nav className="flex-1 space-y-1 overflow-y-auto px-3 pb-4">

@@ -32,6 +32,8 @@ export default async function PaginaLanding({ searchParams }: { searchParams: Pr
     <div className="min-h-screen bg-fondo">
       {/* Header con propuesta de valor y CTA dominante, visible sin scroll */}
       <section className="mx-auto flex min-h-[85vh] max-w-5xl flex-col items-center justify-center gap-6 px-4 py-16 text-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo-todo-hogar.png" alt={config.nombreNegocio} className="size-20 rounded-full shadow-[var(--sombra-suave)]" />
         <div className="flex items-center gap-2.5 rounded-full bg-superficie-2 px-4 py-2 text-sm font-medium text-texto-suave">
           <Icono nombre="ShieldCheck" className="size-4 text-marca-fuerte" />
           Garantía directa post-venta
