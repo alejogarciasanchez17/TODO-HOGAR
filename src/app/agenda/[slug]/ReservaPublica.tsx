@@ -6,15 +6,8 @@ import { Boton } from "@/components/ui/Boton";
 import { Campo } from "@/components/ui/Campo";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
+import { proximosDiasHabiles } from "@/lib/utils-fecha";
 import { obtenerSlotsDelDia, agendarCitaPublica } from "./actions";
-
-function proximosDias(n: number) {
-  return Array.from({ length: n }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    return d;
-  });
-}
 
 export function ReservaPublica({
   slug,
@@ -31,7 +24,7 @@ export function ReservaPublica({
   horarioInicio: string;
   horarioFin: string;
 }) {
-  const dias = proximosDias(10);
+  const dias = proximosDiasHabiles(10);
   const [diaElegido, setDiaElegido] = useState(0);
   const [slots, setSlots] = useState<{ hora: string; fechaISO: string; disponible: boolean }[]>([]);
   const [cargandoSlots, setCargandoSlots] = useState(true);

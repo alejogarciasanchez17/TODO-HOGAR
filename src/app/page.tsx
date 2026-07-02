@@ -103,7 +103,7 @@ export default async function PaginaLanding({ searchParams }: { searchParams: Pr
       </a>
 
       <footer className="border-t border-borde py-8 text-center text-sm text-texto-tenue">
-        {config.nombreNegocio} · Querétaro · <a href="/login" className="underline hover:text-texto">Acceso para el equipo</a>
+        {config.nombreNegocio} · Querétaro
       </footer>
     </div>
   );

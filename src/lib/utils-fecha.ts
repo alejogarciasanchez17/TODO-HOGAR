@@ -48,3 +48,17 @@ export function formatoHora(fecha: Date | string): string {
   const f = typeof fecha === "string" ? new Date(fecha) : fecha;
   return format(f, "h:mm a", { locale: es });
 }
+
+/** Días de la semana en que "todo hogar" atiende citas: miércoles a sábado (0=domingo). */
+const DIAS_DISPONIBLES_AGENDA = [3, 4, 5, 6];
+
+/** Próximos `cantidad` días que caen en un día disponible para agendar. */
+export function proximosDiasHabiles(cantidad: number, diasAdelante = 30): Date[] {
+  const dias: Date[] = [];
+  for (let i = 0; dias.length < cantidad && i < diasAdelante; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    if (DIAS_DISPONIBLES_AGENDA.includes(d.getDay())) dias.push(d);
+  }
+  return dias;
+}

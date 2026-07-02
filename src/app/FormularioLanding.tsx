@@ -6,17 +6,10 @@ import { Campo } from "@/components/ui/Campo";
 import { Input } from "@/components/ui/Input";
 import { Icono } from "@/components/ui/Icono";
 import { cn } from "@/lib/utils";
+import { proximosDiasHabiles } from "@/lib/utils-fecha";
 import { obtenerSlotsLanding, enviarLandingLead } from "./actions-landing";
 
 const CLAVE_INTENTO = "todohogar_landing_intento_pendiente";
-
-function proximosDias(n: number) {
-  return Array.from({ length: n }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    return d;
-  });
-}
 
 type DatosIntento = { nombre: string; telefono: string; correo: string; fechaISO: string; vendedorId: string; canalUTM: string };
 
@@ -35,7 +28,7 @@ export function FormularioLanding({
   canalUTM: string;
   whatsappNegocio: string;
 }) {
-  const dias = proximosDias(10);
+  const dias = proximosDiasHabiles(10);
   const [diaElegido, setDiaElegido] = useState(0);
   const [slots, setSlots] = useState<{ hora: string; fechaISO: string; disponible: boolean }[]>([]);
   const [cargandoSlots, setCargandoSlots] = useState(true);
