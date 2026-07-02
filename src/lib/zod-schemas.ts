@@ -54,6 +54,11 @@ export const recordatorioSchema = z.object({
   clienteId: z.string().optional().or(z.literal("")),
 });
 
+export const etiquetaSchema = z.object({
+  nombre: z.string().trim().min(2, "Escribe un nombre para la etiqueta").max(40),
+  color: z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Elige un color válido").default("#e8b763"),
+});
+
 /**
  * Limpia campos opcionales tipo "" a `null` para que Prisma los guarde como null.
  * Solo ensancha el tipo a `| null` en campos de texto libre (string exacto),

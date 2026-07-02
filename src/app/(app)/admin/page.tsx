@@ -11,6 +11,7 @@ export const metadata: Metadata = { title: "Panel admin" };
 const SECCIONES: { href: string; icono: NombreIcono; titulo: string; frase: string }[] = [
   { href: "/admin/usuarios", icono: "UserCog", titulo: "Usuarios", frase: "Alta, roles y contraseñas de tu equipo" },
   { href: "/admin/configuracion", icono: "Settings", titulo: "Configuración del negocio", frase: "Marca, etapas, horarios, moneda y metas" },
+  { href: "/admin/etiquetas", icono: "Tag", titulo: "Etiquetas", frase: "Las etiquetas que le pones a tus clientes" },
   { href: "/admin/actividad", icono: "ListChecks", titulo: "Actividad del equipo", frase: "Bitácora de quién hizo qué y cuándo" },
   { href: "/admin/respaldo", icono: "Download", titulo: "Respaldar y exportar", frase: "Descarga toda tu base o restaura un respaldo" },
   { href: "/admin/papelera", icono: "Trash2", titulo: "Papelera", frase: "Lo eliminado en los últimos 30 días" },

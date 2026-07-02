@@ -1,35 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
-/** Offset en minutos entre UTC y `timeZone` en el instante `fecha` (ej. -360 para America/Mexico_City). */
-function offsetMinutos(fecha: Date, timeZone: string): number {
-  const partes = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    hourCycle: "h23",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).formatToParts(fecha);
-  const obj = Object.fromEntries(partes.filter((p) => p.type !== "literal").map((p) => [p.type, Number(p.value)]));
-  const comoUtc = Date.UTC(obj.year, obj.month - 1, obj.day, obj.hour, obj.minute, obj.second);
-  return Math.round((comoUtc - fecha.getTime()) / 60000);
-}
-
-/** Instante real (UTC) que corresponde a `hora:minuto` del mismo día calendario de `fechaRef`, contado en `timeZone`. */
-function horaEnZona(fechaRef: Date, hora: number, minuto: number, timeZone: string): Date {
-  const { year, month, day } = Object.fromEntries(
-    new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
-      .formatToParts(fechaRef)
-      .filter((p) => p.type !== "literal")
-      .map((p) => [p.type, Number(p.value)])
-  ) as unknown as { year: number; month: number; day: number };
-
-  const comoSiFueraUtc = Date.UTC(year, month - 1, day, hora, minuto, 0);
-  const offset = offsetMinutos(new Date(comoSiFueraUtc), timeZone);
-  return new Date(comoSiFueraUtc - offset * 60000);
-}
+import { horaEnZona } from "@/lib/utils-fecha";
 
 /** Genera los horarios disponibles de un vendedor en un día, respetando el horario del negocio y sin chocar con citas ya tomadas. */
 export async function horariosDisponibles(params: {
